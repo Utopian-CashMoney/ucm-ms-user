@@ -85,9 +85,10 @@ public class AuthController {
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody RequestLoginDto userRequest) {
 		if (userRepository.existsByUsername(userRequest.getUsername())) {
-			Optional<User> user = userRepository.findByUsername(userRequest.getUsername());
+			
+			User user = userRepository.findByUsername(userRequest.getUsername());
 
-			Boolean isActive = user.get().getisActive();
+			Boolean isActive = user.getisActive();
 
 			if (!isActive) {
 				throw new Error("Please confirm the account first via email sent to you!");

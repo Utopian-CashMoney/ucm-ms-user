@@ -20,6 +20,7 @@ import com.ucm.ms.entity.User;
 @Service
 @Transactional
 public class UserInfoService implements UserDetailsService {
+
 	@Autowired
 	UserRepository userRepository;
 
@@ -29,22 +30,22 @@ public class UserInfoService implements UserDetailsService {
 	 * @return UserDetails
 	 * 
 	 */
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		
-		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+
+
+		User user = userRepository.findByUsername(username);
 
 		return UserInfo.build(user);
 	}
-	
-	
+
+
 	public User getUser(int id) {
 		User user = userRepository.getUserById(id);
 		return user;
 	}
-	
-	
+
+
 
 }
