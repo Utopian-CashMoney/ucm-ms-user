@@ -18,9 +18,17 @@ public class ResponseLoginDto {
 	private String phNum;
 	private String firstName;
 	private String lastName;
+	private String address;
+	private String city;
+	private String state;
+	private String zipcode;
+
+	
+	
 
 
-	public ResponseLoginDto(String accessToken, int id, String username, String email, String phNum, String firstName, String lastName) {
+	public ResponseLoginDto(String accessToken, int id, String username, String email, String phNum, String firstName, String lastName
+			,String address, String city, String state, String zipcode) {
 		this.token = accessToken;
 		this.id = id;
 		this.username = username;
@@ -28,6 +36,10 @@ public class ResponseLoginDto {
 		this.phNum = phNum;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zipcode = zipcode;
 	}
 
 
@@ -96,5 +108,43 @@ public class ResponseLoginDto {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
+
+
+	public String getAddress() {
+		return address;
+	}
+
+
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
+	
+	
 
 }
