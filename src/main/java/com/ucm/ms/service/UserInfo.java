@@ -1,3 +1,4 @@
+
 package com.ucm.ms.service;
 
 import java.util.Collection;
@@ -32,13 +33,22 @@ public class UserInfo implements UserDetails {
 	private String lastName;
 
 	private String password;
+	
+	private String address;
+
+	private String city;
+	
+	private String state;
+	
+	private String zipcode;
 
 	
 	// For future Sprints for Authorities
 	private Collection<? extends GrantedAuthority> authorities;
 	
 	
-	public UserInfo(int id, String username, String email, String password, String phNum, String firstName, String lastName) {
+	public UserInfo(int id, String username, String email, String password, String phNum, String firstName, String lastName
+			,String address, String city, String state, String zipcode) {
 		this.id = id;
 		this.username = username;
 		this.email = email;
@@ -46,6 +56,10 @@ public class UserInfo implements UserDetails {
 		this.phNum = phNum;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zipcode = zipcode;
 	}
 
 	public static UserInfo build(User user) {
@@ -57,8 +71,11 @@ public class UserInfo implements UserDetails {
 				user.getPassword(),
 				user.getPhNum(),
 				user.getFirstName(),
-				user.getLastName());
-		
+				user.getLastName(),
+				user.getAddress(),
+				user.getCity(),
+				user.getState(),
+				user.getZipcode());
 		
 	}
 
@@ -86,6 +103,24 @@ public class UserInfo implements UserDetails {
 	public String getLastName() {
 		return lastName;
 	}
+	
+	public String getAddress() {
+		return address;
+	}
+	
+	public String getCity() {
+		return city;
+	}
+	
+	public String getState() {
+		return state;
+	}
+	
+	public String getZipcode() {
+		return zipcode;
+	}
+	
+	
 
 	@Override
 	public String getPassword() {
@@ -128,4 +163,3 @@ public class UserInfo implements UserDetails {
 		return Objects.equals(id, user.id);
 	}
 }
-

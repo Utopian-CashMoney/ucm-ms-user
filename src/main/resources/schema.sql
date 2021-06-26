@@ -12,9 +12,13 @@ CREATE TABLE IF NOT EXISTS `users`
     `username`   VARCHAR(31)  NOT NULL,
     `email`      VARCHAR(127) NOT NULL,
     `password`   VARCHAR(255) NOT NULL,
-    `phone`      VARCHAR(31)  NULL,
+    `phone`      VARCHAR(31)  NOT NULL,
     `first_name` VARCHAR(63)  NOT NULL,
     `last_name`  VARCHAR(63)  NOT NULL,
+    `address`	 VARCHAR(255) NOT NULL,
+    `city`       VARCHAR(127) NOT NULL,
+    `state` 	 VARCHAR(63)  NOT NULL,
+    `zipcode`	 VARCHAR(63)  NOT NULL,
     `is_active`  BOOLEAN              ,
     PRIMARY KEY (`id`)
 );
@@ -23,33 +27,13 @@ CREATE UNIQUE INDEX `email_UNIQUE` ON `users` (`email` ASC);
 
 CREATE UNIQUE INDEX `username_UNIQUE` ON `users` (`username` ASC);
 
--- -----------------------------------------------------
--- Table `confirm_token`
--- -----------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS `confirm_token`
-(
-    `token_id`              INT             NOT NULL AUTO_INCREMENT,
-    `users_id`              INT             NOT NULL,
-    `confirmation_token`    VARCHAR(255)    NOT NULL,
-    `created_date`          DATETIME        NOT NULL,
-    CONSTRAINT `fk_confirm_token_users1`
-        FOREIGN KEY (`users_id`)
-            REFERENCES `users` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    PRIMARY KEY (`token_id`)
-);
-
-CREATE UNIQUE INDEX `fk_confirm_token_users1_idx` ON `confirm_token` (`users_id` ASC);
-
 
 -- -----------------------------------------------------
 -- Table `loan`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `loan`
 (
-    `id`            INT            NOT NULL,
+    `id`            INT            NOT NULL AUTO_INCREMENT,
     `max_amount`    DECIMAL(20, 2) NOT NULL,
     `name`          VARCHAR(255)   NOT NULL,
     `interest_rate` DECIMAL(5, 2)  NOT NULL,
@@ -239,3 +223,23 @@ CREATE TABLE IF NOT EXISTS `card`
 );
 
 CREATE INDEX `fk_card_user_account1_idx` ON `card` (`account_number` ASC);
+
+-- -----------------------------------------------------
+-- Table `confirm_token`
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `confirm_token`
+(
+    `token_id`              INT             NOT NULL AUTO_INCREMENT,
+    `users_id`              INT             NOT NULL,
+    `confirmation_token`    VARCHAR(255)    NOT NULL,
+    `created_date`          DATETIME        NOT NULL,
+    CONSTRAINT `fk_confirm_token_users1`
+        FOREIGN KEY (`users_id`)
+            REFERENCES `users` (`id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION,
+    PRIMARY KEY (`token_id`)
+);
+
+CREATE UNIQUE INDEX `fk_confirm_token_users1_idx` ON `confirm_token` (`users_id` ASC);

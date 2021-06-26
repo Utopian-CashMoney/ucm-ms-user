@@ -18,6 +18,7 @@ import com.ucm.ms.entity.User;
 
 
 @Service
+@Transactional
 public class UserInfoService implements UserDetailsService {
 	@Autowired
 	UserRepository userRepository;
@@ -30,7 +31,6 @@ public class UserInfoService implements UserDetailsService {
 	 */
 	
 	@Override
-	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		User user = userRepository.findByUsername(username)
@@ -38,5 +38,13 @@ public class UserInfoService implements UserDetailsService {
 
 		return UserInfo.build(user);
 	}
+	
+	
+	public User getUser(int id) {
+		User user = userRepository.getUserById(id);
+		return user;
+	}
+	
+	
 
 }
