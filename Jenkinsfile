@@ -12,6 +12,14 @@ pipeline {
 	                git branch: 'CP', url: 'https://github.com/Utopian-CashMoney/ucm-ms-user.git'            
 	        }
 	    }
+	    
+          stage ('Unit Tests') {
+            
+            steps {
+            
+                  sh 'mvn test'        
+            }
+        }
 
         stage ('Build') {
             
