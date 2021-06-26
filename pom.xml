@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ucm.ms</groupId>
-	<artifactId>ucm-ms-users</artifactId>
+	<artifactId>ucm-ms-user</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ucm-ms-users</name>
 	<description>Traveler Micro Service</description>
