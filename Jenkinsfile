@@ -1,22 +1,33 @@
-pipeline {
-    agent any
-    stages {
-        stage("Test and Package") {
+pipeline { 
+    agent any 
+    
+    tools { 
+	    maven 'Maven 3.8.1' 
+	    jdk 'jdk16' 
+    }
+    
+    stages { 
+	      stage ('Checkout Git Repo') {
+	        steps {
+	                git branch: 'CP', url: 'https://github.com/Utopian-CashMoney/ucm-ms-user.git'            
+	        }
+	    }
+	    
+          stage ('Unit Tests') {
+            
             steps {
-               sh "mvn clean test"
+            
+                  sh 'mvn test'        
             }
         }
-        
-	        stage("Clean and Test target") {
-	    steps {
-	        	 sh "mvn package"
-	    	}
-        }
 
-    }
-    post {
-        always {
-            sh "mvn clean"
+        stage ('Build') {
+            
+            steps {
+            
+                  sh 'mvn clean package' 
+                
+            }
         }
     }
 }
