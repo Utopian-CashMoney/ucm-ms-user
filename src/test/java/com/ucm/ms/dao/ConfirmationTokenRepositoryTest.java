@@ -28,7 +28,7 @@ class ConfirmationTokenRepositoryTest {
 		
 
 	@Test
-	void testFindByUserName() {
+	public void testFindByUserName() {
 		
 		Date date = new Date(0);
 		
