@@ -37,7 +37,7 @@ class UserInfoServiceTest {
 
 
 	@Test
-	void testLoadUserByUsername() {
+	public void testLoadUserByUsername() {
 
 		User u1 = new User();
 		u1.setUsername("name");
