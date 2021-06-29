@@ -31,19 +31,23 @@ class UserRepositoryTest {
 		user.setPhNum("111-111-1111");
 		user.setFirstName("name1");
 		user.setLastName("one");
+		user.setAddress("666 Not ave");
+		user.setCity("city");
+		user.setState("JA");
+		user.setZipcode("88775");
 		user.setIsActive(true);
 		
 		userDao.saveAndFlush(user);
-		
-		assertEquals("name1", userDao.findByUsername("name1").get().getUsername());
+				
+		assertEquals("name1", userDao.findByUsername("name1").getUsername());
 		
 		// Tests with different username
 		user.setUsername("name2");
-		assertEquals("name2", userDao.findByUsername("name2").get().getUsername());
+		assertEquals("name2", userDao.findByUsername("name2").getUsername());
 		
 		// Tests with different username
 		user.setUsername("name3");
-		assertEquals("name3", userDao.findByUsername("name3").get().getUsername());
+		assertEquals("name3", userDao.findByUsername("name3").getUsername());
 		
 	}
 
