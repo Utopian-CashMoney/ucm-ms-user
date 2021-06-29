@@ -22,7 +22,7 @@ class UserRepositoryTest {
 		
 
 	@Test
-	void testFindByUserName() {
+	public void testFindByUserName() {
 		
 		User user = new User();
 		user.setUsername("name1");
