@@ -29,6 +29,7 @@ pipeline {
                 
             }
         }
+     }
 	    
 	post {
 	  always {
@@ -36,5 +37,4 @@ pipeline {
 	//               sh "docker system prune -f"
 	   }
       }
-    }
 }
