@@ -44,7 +44,7 @@ pipeline {
 		   
 // 		sh "aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin ${AWS_ID}.dkr.ecr.us-east-2.amazonaws.com"
 		   
-		sh "sudo docker build --tag ${IMG_NAME}:${COMMIT_HASH} ."
+		sh "docker build --tag ${IMG_NAME}:${COMMIT_HASH} ."
 		   
 // 		sh "docker tag ${IMG_NAME}:${COMMIT_HASH} ${AWS_ID}.dkr.ecr.us-east-2.amazonaws.com/${IMG_NAME}:${COMMIT_HASH}"
 		   
