@@ -63,7 +63,9 @@ pipeline {
 		    
                 sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 202447729588.dkr.ecr.us-east-2.amazonaws.com'
 		     
-		     sh 'docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/${IMG_NAME}:latest'
+		     //sh 'docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/${IMG_NAME}:latest'
+		     
+		     sh "docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/${IMG_NAME}:${COMMIT_HASH}"
 		 
          
              }
