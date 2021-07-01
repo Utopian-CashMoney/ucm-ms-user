@@ -72,7 +72,7 @@ pipeline {
 		//sh "docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH}"
 		
 		// We are pushing the new created docker image from our initial docker image to ECR
-		sh "docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${IMG_NAME}"
+		sh "docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH}"
 		     
 		
          
