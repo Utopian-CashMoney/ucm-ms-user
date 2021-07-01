@@ -46,9 +46,8 @@ pipeline {
 		   
 // 		sh "aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin ${AWS_ID}.dkr.ecr.us-east-2.amazonaws.com"
 		   
-// here 1		sh "docker build --tag ${IMG_NAME}:${COMMIT_HASH} ."
+		sh "docker build --tag ${IMG_NAME}:${COMMIT_HASH} ."
 		   
-		   sh "docker build --tag ${IMG_NAME}:${COMMIT_HASH} 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH} ."
 		   
 // 		sh "docker tag ${IMG_NAME}:${COMMIT_HASH} ${AWS_ID}.dkr.ecr.us-east-2.amazonaws.com/${IMG_NAME}:${COMMIT_HASH}"
 		   
@@ -64,12 +63,10 @@ pipeline {
              steps{ 
 		    
                 sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 202447729588.dkr.ecr.us-east-2.amazonaws.com'
+		     		     
+		//sh "docker tag ${IMG_NAME}:${COMMIT_HASH} 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH}"
 		     
-		     //sh 'docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/${IMG_NAME}:latest'
-		     
-		//here 2     //sh "docker tag ${IMG_NAME}:${COMMIT_HASH} 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH}"
-		     
-		     sh "docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH}"
+		sh "docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH}"
 		 
          
              }
