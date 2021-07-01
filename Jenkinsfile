@@ -11,7 +11,7 @@ pipeline {
 	    
 	   // AWS_ID = credentials('AWS_ID')
 	    
-	    IMG_NAME = "user-ms"
+	    IMG_NAME = "userMS"
     }
     
     stages { 
