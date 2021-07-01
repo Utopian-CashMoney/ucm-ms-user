@@ -66,7 +66,7 @@ pipeline {
 		     		     
 		//sh "docker tag ${IMG_NAME}:${COMMIT_HASH} 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH}"
 		     
-		sh "docker tag ${COMMIT_HASH} 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH}"
+		sh "docker tag ${COMMIT_HASH} 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp"
 		     
 		//sh "docker push 202447729588.dkr.ecr.us-east-2.amazonaws.com/bankingapp:${COMMIT_HASH}"
 		
