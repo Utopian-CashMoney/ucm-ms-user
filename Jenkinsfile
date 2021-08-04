@@ -46,15 +46,7 @@ pipeline {
                   }
         }
 	    
-	    stage('Pushing to ECR') {
-		    steps  {
-                sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 202447729588.dkr.ecr.us-east-2.amazonaws.com'
-		        // Here we are tagging the docker image with the new name which is ECR name and giving the image name which will be stored in ECR   
-		        sh "docker tag ${IMG_NAME}:${COMMIT_HASH} ${registry}:${COMMIT_HASH}"
-		        // We are pushing the new created docker image from our initial docker image to ECR
-                sh "docker push ${registry}:${COMMIT_HASH}"
-            }
-        }
+	  
 	    
         stage ('Build') {
             
@@ -71,7 +63,7 @@ pipeline {
 		        sh "docker build --tag ${IMG_NAME}:${COMMIT_HASH} ."  
             }
 	    }
-	    stage('Pushing to ECR') {
+	     stage('Pushing to ECR') {
 		    steps  {
                 sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 202447729588.dkr.ecr.us-east-2.amazonaws.com'
 		        // Here we are tagging the docker image with the new name which is ECR name and giving the image name which will be stored in ECR   
@@ -80,6 +72,7 @@ pipeline {
                 sh "docker push ${registry}:${COMMIT_HASH}"
             }
         }
+	  
     }
 	post {
 	    always {
