@@ -10,6 +10,8 @@ pipeline {
 	    
 	    COMMIT_HASH = "${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
 	    
+	    IMG_NAME = "userms"
+	    
 	    registry = "202447729588.dkr.ecr.us-east-2.amazonaws.com/user-ms"
 
 	    scannerHome = tool 'SonarqubeScanner'
