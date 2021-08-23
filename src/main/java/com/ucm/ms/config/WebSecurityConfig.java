@@ -61,6 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new CustomPasswordEncoder();
 	}
 
+	
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable()
@@ -68,11 +70,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests()
 			.antMatchers("/auth/**").permitAll()
+			.antMatchers("/actuator/**").permitAll()
 			.antMatchers("/api/test/**").permitAll()
 			.antMatchers("/h2-console/**").permitAll()
+			
 			.anyRequest().authenticated();
 
 		 http.headers().frameOptions().disable();
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
+	
 }
