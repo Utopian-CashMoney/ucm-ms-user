@@ -28,7 +28,7 @@ class ConfirmationTokenRepositoryTest {
 		
 
 	@Test
-	void testFindByUserName() {
+	public void testFindByUserName() {
 		
 		Date date = new Date(0);
 		
@@ -39,6 +39,10 @@ class ConfirmationTokenRepositoryTest {
 		user.setPhNum("111-111-1111");
 		user.setFirstName("name1");
 		user.setLastName("one");
+		user.setStreet("666 Not ave");
+		user.setCity("city");
+		user.setState("JA");
+		user.setZipcode("88775");
 		user.setIsActive(true);
 		
 		userDao.saveAndFlush(user);

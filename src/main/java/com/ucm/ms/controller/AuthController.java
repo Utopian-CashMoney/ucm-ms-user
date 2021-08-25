@@ -1,9 +1,10 @@
 package com.ucm.ms.controller;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -33,13 +34,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ucm.ms.config.JwtUtils;
+import com.ucm.ms.dao.AccountTypeDAO;
 import com.ucm.ms.dao.ConfirmationTokenRepository;
+import com.ucm.ms.dao.UserAccountDAO;
 import com.ucm.ms.dao.UserRepository;
 import com.ucm.ms.dto.RequestLoginDto;
 import com.ucm.ms.dto.RequestSignupDto;
 import com.ucm.ms.dto.ResponseLoginDto;
+import com.ucm.ms.entity.AccountType;
 import com.ucm.ms.entity.ConfirmToken;
 import com.ucm.ms.entity.User;
+import com.ucm.ms.entity.UserAccount;
 import com.ucm.ms.service.UserInfo;
 import com.ucm.ms.service.UserInfoService;
 
@@ -68,6 +73,14 @@ public class AuthController {
 
 	@Autowired
 	JwtUtils jwtUtils;
+	
+	@Autowired
+	AccountTypeDAO accountTypeDao;
+	
+	@Autowired
+	UserAccountDAO userAccountDao;
+	
+	
 
 	// Account Verification Link expiry time in milliseconds( 1 min = 60,000 ms )
 	final int linkExpiryTime = 180000;
@@ -85,9 +98,10 @@ public class AuthController {
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody RequestLoginDto userRequest) {
 		if (userRepository.existsByUsername(userRequest.getUsername())) {
-			Optional<User> user = userRepository.findByUsername(userRequest.getUsername());
+			
+			User user = userRepository.findByUsername(userRequest.getUsername());
 
-			Boolean isActive = user.get().getisActive();
+			Boolean isActive = user.getisActive();
 
 			if (!isActive) {
 				throw new Error("Please confirm the account first via email sent to you!");
@@ -133,7 +147,7 @@ public class AuthController {
 		user.setPhNum(userRequest.getPhone());
 		user.setFirstName(userRequest.getFirst_name());
 		user.setLastName(userRequest.getLast_name());
-		user.setAddress(userRequest.getAddress());
+		user.setStreet(userRequest.getAddress());
 		user.setCity(userRequest.getCity());
 		user.setState(userRequest.getState());
 		user.setZipcode(userRequest.getZipcode());
@@ -254,8 +268,8 @@ public class AuthController {
 					+ "                        </td>\n" + "                    </tr> <!-- COPY -->\n"
 					+ "                    <tr>\n"
 					+ "                        <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\n"
-					+ "                            <p style=\"margin: 0;\"><a href=http://localhost:8080/auth/confirm-account?token="
-					+ confirmationToken.getConfirmationToken() + ">http://localhost:8080/auth/confirm-account?token="
+					+ "                            <p style=\"margin: 0;\"><a href=http://localhost:8000/auth/confirm-account?token="
+					+ confirmationToken.getConfirmationToken() + ">http://localhost:8000/auth/confirm-account?token="
 					+ confirmationToken.getConfirmationToken() + "</a></p>\n" + "                        </td>\n"
 					+ "                    </tr>\n" + "                    <tr>\n"
 					+ "                        <td bgcolor=\"#ffffff\" align=\"left\" style=\"padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\">\n"
@@ -314,7 +328,7 @@ public class AuthController {
 		// User will only be able to edit email, phone, address, city, state, zipcode in "User profile"
 		user.setEmail(signupDto.getEmail());
 		user.setPhNum(signupDto.getPhone());
-		user.setAddress(signupDto.getAddress());
+		user.setStreet(signupDto.getAddress());
 		user.setCity(signupDto.getCity());
 		user.setState(signupDto.getState());
 		user.setZipcode(signupDto.getZipcode());
@@ -322,6 +336,150 @@ public class AuthController {
 		userRepository.save(user);
 		
 	}
+	
+	@PostMapping(path="/forget_password")
+	public void fogetUserPassword(@RequestParam String email) {
+		
+		
+		if(userRepository.existsByEmail(email)) {
+			System.out.println("yesssss");
+			
+			
+			
+			String to = email;
+			String from = "utopiacashmoney99@gmail.com";
+			final String username = "utopiacashmoney99@gmail.com";
+			final String password = "UtopiaBanking100?";
+
+			String host = "smtp.gmail.com";
+
+			Properties props = new Properties();
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.starttls.enable", "true");
+			props.put("mail.smtp.host", host);
+			props.put("mail.smtp.port", "587");
+
+			Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username, password);
+				}
+			});
+
+
+			try {
+				Message message = new MimeMessage(session);
+				
+				message.setFrom(new InternetAddress(from));
+				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+				
+				message.setSubject("Password reset!");
+				message.setContent("<html lang=\"en-US\">\n"
+						+ "\n"
+						+ "<head>\n"
+						+ "    <meta content=\"text/html; charset=utf-8\" http-equiv=\"Content-Type\" />\n"
+						+ "    <title>Reset Password Email Template</title>\n"
+						+ "    <meta name=\"description\" content=\"Reset Password Email Template.\">\n"
+						+ "    <style type=\"text/css\">\n"
+						+ "        a:hover {text-decoration: underline !important;}\n"
+						+ "    </style>\n"
+						+ "</head>\n"
+						+ "\n"
+						+ "<body marginheight=\"0\" topmargin=\"0\" marginwidth=\"0\" style=\"margin: 0px; background-color: #f2f3f8;\" leftmargin=\"0\">\n"
+						+ "    <!--100% body table-->\n"
+						+ "    <table cellspacing=\"0\" border=\"0\" cellpadding=\"0\" width=\"100%\" bgcolor=\"#f2f3f8\"\n"
+						+ "        style=\"@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;\">\n"
+						+ "        <tr>\n"
+						+ "            <td>\n"
+						+ "                <table style=\"background-color: #f2f3f8; max-width:670px;  margin:0 auto;\" width=\"100%\" border=\"0\"\n"
+						+ "                    align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\n"
+						+ "                    <tr>\n"
+						+ "                        <td style=\"height:80px;\">&nbsp;</td>\n"
+						+ "                    </tr>\n"
+						+ "                    <tr>\n"
+						+ "                        <td style=\"height:20px;\">&nbsp;</td>\n"
+						+ "                    </tr>\n"
+						+ "                    <tr>\n"
+						+ "                        <td>\n"
+						+ "                            <table width=\"95%\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\"\n"
+						+ "                                style=\"max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);\">\n"
+						+ "                                <tr>\n"
+						+ "                                    <td style=\"height:40px;\">&nbsp;</td>\n"
+						+ "                                </tr>\n"
+						+ "                                <tr>\n"
+						+ "                                    <td style=\"padding:0 35px;\">\n"
+						+ "                                        <h1 style=\"color:#1e1e2d; font-weight:500; margin:0;font-size:32px;font-family:'Rubik',sans-serif;\">You have\n"
+						+ "                                            requested to reset your password</h1>\n"
+						+ "                                        <span\n"
+						+ "                                            style=\"display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;\"></span>\n"
+						+ "                                        <p style=\"color:#455056; font-size:15px;line-height:24px; margin:0;\">\n"
+						+ "                                            We cannot simply send you your old password. A unique link to reset your\n"
+						+ "                                            password has been generated for you. To reset your password, click the\n"
+						+ "                                            following link and follow the instructions.\n"
+						+ "                                        </p>\n"
+						+ "                                        <a href=http://localhost:3000/resetPassword?email=" + to + "\n"
+						+ "                                            style=\"  background-color: #04AA6D;\n"
+																	+ "  border: none;\n"
+																	+ "  color: white;\n"
+																	+ "  padding: 20px;\n"
+																	+ "  text-align: center;\n"
+																	+ "  text-decoration: none;\n"
+																	+ "  display: inline-block;\n"
+																	+ "  font-size: 16px;\n"
+																	+ "  margin: 4px 2px; border-radius: 50%;\">Reset Password</a>\n"
+						+ "                                    </td>\n"
+						+ "                                </tr>\n"
+						+ "                                <tr>\n"
+						+ "                                    <td style=\"height:40px;\">&nbsp;</td>\n"
+						+ "                                </tr>\n"
+						+ "                            </table>\n"
+						+ "                        </td>\n"
+						+ "                    <tr>\n"
+						+ "                        <td style=\"height:20px;\">&nbsp;</td>\n"
+						+ "                    </tr>\n"
+						+ "                    <tr>\n"
+						+ "                        <td style=\"height:80px;\">&nbsp;</td>\n"
+						+ "                    </tr>\n"
+						+ "                </table>\n"
+						+ "            </td>\n"
+						+ "        </tr>\n"
+						+ "    </table>\n"
+						+ "    <!--/100% body table-->\n"
+						+ "</body>\n"
+						+ "\n"
+						+ "</html>","text/html");
+				
+				Transport.send(message);
+				
+				
+			} catch (AddressException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			
+			
+			
+		}
+		
+		
+	}
+	
+	
+	@PostMapping(path="/reset_password")
+	public void resetUserPassword(@RequestParam String newPassword, @RequestParam String email) {
+		
+		User user = userRepository.findByEmailIgnoreCase(email);
+		user.setPassword(newPassword);
+		userRepository.save(user);
+		
+		// ALSO HERE SEND AN EMAIL THAT YOUR PASSWORD HAS BEEN CHANGED.
+		
+		
+	}
+	
 	
 	@GetMapping(path = "/getUser")
 	public ResponseEntity<User> get(@RequestParam String userId) {
@@ -333,6 +491,50 @@ public class AuthController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	
+	@GetMapping(path="get_credit_cards")
+	public ResponseEntity<Collection<AccountType>> getCreditCards() {
+		
+		try {
+			
+			Collection<AccountType> creditCards = accountTypeDao.getCreditCards();
+			
+			return new ResponseEntity<>(creditCards, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}		
+		
+	}
+	
+	
+	@PostMapping(path="/user_credit_card_signup")
+	public void usercreditCardSignUp(@RequestParam int userId, @RequestParam String cardName) {
+		
+		System.out.println("User Id: " + userId + " Card Name: " + cardName);
+		
+		
+		// put a check here for unique account number
+		
+	    Random rnd = new Random();
+	    int accountNumber = rnd.nextInt(999999999);
+		UserAccount userAccount = new UserAccount();
+		User user = userRepository.getUserById(userId);
+		
+		userAccount.setAccountNumber(String.valueOf(accountNumber));
+		userAccount.setUser(user);
+		userAccount.setAccount_type(accountTypeDao.getIdByName(cardName));
+		userAccount.setBalance(BigDecimal.valueOf(10000.00));
+		
+		System.out.println("HEREEE: " + userAccount.getAccountNumber());
+		
+		userAccountDao.save(userAccount);
+		
+		// ALSO ADD DATA TO CREDIT_CARD TABLE HEREE AS WELL
+		
+	}
+	
 
 	/**
 	 * Get all Users in DB
@@ -348,5 +550,41 @@ public class AuthController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	
+	/**
+	 * Delete(set inactive) the User in DB
+	 * 
+	 * @return void
+	 */
+	@PostMapping("/deleteUserAccount")
+	public void deleteUser(@RequestParam int id, @RequestParam String pass) {
+		
+		User user = userInfoService.getUser(id);
+
+		String password = user.getPassword();
+		
+		System.out.println("Password: " + password + " Pass: " + pass);
+
+		if (!pass.equals(password)) {
+			throw new Error("Wrong Credentials!");
+		}
+		
+		userInfoService.deleteUser(id);
+	}
+	
+	
+	/**
+	 * Admin Update the user in DB
+	 * 
+	 * @return void
+	 */
+	@PostMapping("/update_user")
+	public void updateUser(@RequestBody User user) {
+				userInfoService.updateUser(user);
+
+	}
+
+	
 
 }

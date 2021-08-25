@@ -72,7 +72,7 @@ public class UserInfo implements UserDetails {
 				user.getPhNum(),
 				user.getFirstName(),
 				user.getLastName(),
-				user.getAddress(),
+				user.getStreet(),
 				user.getCity(),
 				user.getState(),
 				user.getZipcode());
