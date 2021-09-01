@@ -1,33 +1,31 @@
-pipeline { 
-    agent any 
-    
-    tools { 
-	    maven 'Maven 3.8.1' 
-	    jdk 'jdk1.8' 
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven 3.8.1'
+	    jdk 'jdk1.8'
+        nodejs 'nodejs'
     }
 
-    
-    stages { 
-	      stage ('Checkout Git Repo') {
-	        steps {
-	                git branch: 'development', url: 'https://github.com/Utopian-CashMoney/ucm-ms-user.git'            
-	        }
-	    }
-	    
-          stage ('Unit Tests') {
-            
+    stages {
+        stage('Package Maven project') {
             steps {
-            
-                  sh 'mvn test'   
+                sh 'mvn clean package'
             }
         }
 
-        stage ('Build') {
-            
+        stage('Build Docker image') {
             steps {
-            
-                  sh 'mvn clean package' 
-                
+                sh 'docker build . -t user-ms'
+            }
+        }
+        
+        stage('Push to Amazon ECR') {
+            steps {
+                withAWS(credentials: 'jenkins-credentials', region: 'us-east-1') {
+                sh 'docker tag user-ms:latest 202447729588.dkr.ecr.us-east-1.amazonaws.com/user-ms:latest'
+                    sh 'docker push 202447729588.dkr.ecr.us-east-1.amazonaws.com/user-ms:latest'
+                }
             }
         }
     }
