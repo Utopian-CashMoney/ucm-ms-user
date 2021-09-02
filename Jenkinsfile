@@ -5,7 +5,6 @@ pipeline {
         maven 'Maven 3.8.1'
 	    jdk 'jdk1.8'
         nodejs 'nodejs'
-        docker 'Docker'
     }
 
     environment {
