@@ -15,7 +15,7 @@ pipeline {
     stages {
         stage('Package Maven project') {
             steps {
-                sh 'mvn package'
+                sh 'mvn clean package'
             }
         }
 
@@ -28,14 +28,16 @@ pipeline {
         stage('Push to Amazon ECR') {
             steps {
                 withAWS(credentials: 'jenkins-credentials', region: '${AWS_REGION}') {
-                    AWS_ACCOUNT_ID = sh(
-                        script: "aws sts get-caller-identity | grep -oP '(?<=\"Account\": \")[^\"]*'",
-                        returnStatus: true
-                    ) == 0
-                    echo "Account ID: ${AWS_ACCOUNT_ID}"
-                    sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-                    sh "docker tag user-ms:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms:latest"
-                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms:latest"
+                    script {
+                        AWS_ACCOUNT_ID = sh(
+                            script: "aws sts get-caller-identity | grep -oP '(?<=\"Account\": \")[^\"]*'",
+                            returnStdout: true
+                        )
+                        echo "Account ID: ${AWS_ACCOUNT_ID}"
+                        sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+                        sh "docker tag user-ms:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms:latest"
+                        sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms:latest"
+                    }
                 }
             }
         }
