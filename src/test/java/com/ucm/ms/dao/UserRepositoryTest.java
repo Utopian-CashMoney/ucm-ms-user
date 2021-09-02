@@ -31,7 +31,7 @@ class UserRepositoryTest {
 		user.setPhNum("111-111-1111");
 		user.setFirstName("name1");
 		user.setLastName("one");
-		user.setAddress("666 Not ave");
+		user.setStreet("666 Not ave");
 		user.setCity("city");
 		user.setState("JA");
 		user.setZipcode("88775");
