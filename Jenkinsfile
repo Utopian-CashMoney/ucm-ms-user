@@ -29,7 +29,7 @@ pipeline {
             steps {
                 withAWS(credentials: 'jenkins-credentials', region: '${AWS_REGION}') {
                     environment {
-                        AWS_ACCOUNT_ID = sh 'aws sts get-caller-identity | grep -oP '(?<="Account": ")[^"]*''
+                        AWS_ACCOUNT_ID = sh 'aws sts get-caller-identity | grep -oP \'(?<="Account": ")[^"]*\''
                     }
                     sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
                     sh "docker tag user-ms:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms:latest"
