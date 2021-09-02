@@ -7,10 +7,15 @@ pipeline {
         nodejs 'nodejs'
     }
 
+    environment {
+        AWS_REGION = 'us-east-1'
+        GIT_COMMIT = "${env.GIT_COMMIT}"
+    }
+
     stages {
         stage('Package Maven project') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn package'
             }
         }
 
@@ -22,10 +27,13 @@ pipeline {
         
         stage('Push to Amazon ECR') {
             steps {
-                withAWS(credentials: 'jenkins-credentials', region: 'us-east-1') {
-                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 202447729588.dkr.ecr.us-east-1.amazonaws.com"
-                    sh "docker tag user-ms:latest 202447729588.dkr.ecr.us-east-1.amazonaws.com/user-ms:latest"
-                    sh "docker push 202447729588.dkr.ecr.us-east-1.amazonaws.com/user-ms:latest"
+                withAWS(credentials: 'jenkins-credentials', region: '${AWS_REGION}') {
+                    environment {
+                        AWS_ACCOUNT_ID = sh 'aws sts get-caller-identity | grep -oP '(?<="Account": ")[^"]*''
+                    }
+                    sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+                    sh "docker tag user-ms:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms:latest"
+                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms:latest"
                 }
             }
         }
