@@ -27,12 +27,12 @@ pipeline {
         
         stage('Push to Amazon ECR') {
             steps {
-                withAWS(credentials: 'jenkins-credentials', region: '${AWS_REGION') {
+                withAWS(credentials: 'jenkins-credentials', region: '${AWS_REGION}') {
                     sh '''
                         AWS_ACCOUNT_ID=$(aws sts get-caller-identity | grep -oP \'(?<="Account": ")[^"]*\')
-                        aws ecr get-login-password --region ${AWS_REGION | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION.amazonaws.com
-                        docker tag ${NAME}:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION.amazonaws.com/${NAME}:latest
-                        docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION.amazonaws.com/${NAME}:latest
+                        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                        docker tag ${NAME}:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${NAME}:latest
+                        docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${NAME}:latest
                     '''
                 }
             }
