@@ -1,5 +1,6 @@
 package com.ucm.ms.dao;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +21,7 @@ public interface AccountTypeDAO extends JpaRepository<AccountType, Integer> {
 
 	
 	public AccountType getIdByName(String name);
+	
+	public AccountType getAprByName(String name);
 
 }
