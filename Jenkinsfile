@@ -15,12 +15,14 @@ pipeline {
     stages {
         stage('Package Maven project') {
             steps {
+                // Build Maven Java project
                 sh 'mvn clean package'
             }
         }
 
         stage('Build Docker image') {
             steps {
+                // Build project into Docker image
                 sh 'docker build . -t ${NAME}'
             }
         }
@@ -28,6 +30,11 @@ pipeline {
         stage('Push to Amazon ECR') {
             steps {
                 withAWS(credentials: 'jenkins-credentials', region: '${AWS_REGION}') {
+                    /*
+                     * Pull account ID from jenkins-credentials AWS profile
+                     * Login to AWS ECR for private repo access
+                     * Push image to ECR
+                     */
                     sh '''
                         AWS_ACCOUNT_ID=$(aws sts get-caller-identity | grep -oP \'(?<="Account": ")[^"]*\')
                         aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
@@ -41,6 +48,7 @@ pipeline {
 
 	post {
 		always {
+            // Cleanup, unused docker images are large
 			sh 'mvn clean'
 			sh 'docker system prune -f'
 		}
