@@ -1,6 +1,9 @@
 
 package com.ucm.ms.entity;
 
+import java.util.Collection;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +11,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -15,12 +21,17 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * User Entity class for
  * table users in database
  * 
  * @author Charvin Patel
  */
+
 
 
 @Entity
@@ -88,11 +99,17 @@ public class User {
 	
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
+    @JsonIgnore
     private ConfirmToken confirmToken;
-   
-    
+       
 	
     private Boolean isActive;
+    
+    
+    // ADDED JUST NOW
+//    @OneToMany(mappedBy = "user")
+//    @JsonBackReference
+//    private Set<UserAccount> UserAccount;
 
 	public Boolean getisActive() {
 		return isActive;
