@@ -1,6 +1,7 @@
 package com.ucm.ms.entity;
 
 import java.math.BigDecimal;
+
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
