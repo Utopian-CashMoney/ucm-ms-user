@@ -29,12 +29,12 @@ public class UserAccount {
 	
     @ManyToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    @JoinColumn(name="users_id")
+    @JoinColumn(name="user_id")
     @JsonIgnore
     private User user;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="account_id")
+    @JoinColumn(name="account_type_id")
     @JsonManagedReference
     @JsonIgnore
     private AccountType account_type;
