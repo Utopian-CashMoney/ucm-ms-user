@@ -34,14 +34,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	
 	public User findById(int id);
 	
-	public User getUserById(int id);
-	
-//	@Transactional
-//	@Modifying
-//	@Query("UPDATE User u SET u.username = :username, u.email = :email, u.password = :password, u.phNum = :phNum, u.firstName = :firstName, u.lastName = :lastName, u.address = :address, u.city = :city, u.state = :state, u.zipcode = :zipcode, u.isActive = :isActive where u.id = :userId")
-//	public void updateUser(@Param("userId") int userId, @Param("username") String username, @Param("firstName") String firstName, @Param("lastName") String lastName, @Param("email") String email, @Param("password") String password, @Param("phNum") String phNum, @Param("address") String address, @Param("city") String city, @Param("state") String state, @Param("zipcode") String zipcode, @Param("isActive") Boolean isActive );
-	
-	
-		
+	public User getUserById(int id);	
 
 }

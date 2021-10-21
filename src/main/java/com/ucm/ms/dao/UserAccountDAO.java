@@ -20,7 +20,7 @@ public interface UserAccountDAO extends JpaRepository<UserAccount, String> {
 	
 	//public UserAccount findByUser(User userId);
 	
-	@Query(value = "SELECT * FROM user_account WHERE users_id = :userId", nativeQuery = true)
+	@Query(value = "SELECT * FROM user_account WHERE user_id = :userId", nativeQuery = true)
 	public Collection<UserAccount> getUserAccounts(int userId);
 	
 
