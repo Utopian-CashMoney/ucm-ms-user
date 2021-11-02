@@ -6,6 +6,11 @@ pipeline {
 	    jdk 'jdk1.8'
     }
 
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+        withAWS(credentials: 'jenkins-credentials')
+    }
+
     environment {
         NAME = 'user-ms'
         AWS_REGION = 'us-east-1'
@@ -49,8 +54,9 @@ pipeline {
 	post {
 		always {
             // Cleanup, unused docker images are large
-			sh 'mvn clean'
-			sh 'docker system prune -f'
+            sh 'mvn clean'
+            sh 'docker system prune -f'
+            cleanWs()
 		}
 	}
 }
