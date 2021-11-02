@@ -21,7 +21,7 @@ pipeline {
         stage('Package Maven project') {
             steps {
                 // Build Maven Java project
-                sh 'mvn clean package'
+                sh 'mvn clean package -DskipTests'
             }
         }
 
