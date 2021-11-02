@@ -1,16 +1,13 @@
 package com.ucm.ms.controller;
 
-import java.lang.invoke.StringConcatFactory;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
-import java.util.UUID;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -87,11 +84,9 @@ public class AuthController {
 
 	@Autowired
 	UserAccountDAO userAccountDao;
-	
+
 	@Autowired
 	CreditCardDAO creditCardDao;
-	
-	
 
 	// Account Verification Link expiry time in milliseconds( 1 min = 60,000 ms )
 	final int linkExpiryTime = 180000;
@@ -289,7 +284,6 @@ public class AuthController {
 			e.printStackTrace();
 		}
 
-		
 	}
 
 	@PostMapping("/signup_by_admin")
@@ -308,7 +302,8 @@ public class AuthController {
 		user.setZipcode(userRequest.getZipcode());
 		user.setIsActive(false);
 
-		if ((!userRepository.existsByEmail(userRequest.getEmail())) && (!userRepository.existsByUsername(userRequest.getUsername()))) {
+		if ((!userRepository.existsByEmail(userRequest.getEmail()))
+				&& (!userRepository.existsByUsername(userRequest.getUsername()))) {
 
 			userRepository.save(user);
 
@@ -449,8 +444,7 @@ public class AuthController {
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}
-		}
-		else {
+		} else {
 			throw new Error("Email/username already exists in the database please choose a different email/username");
 		}
 
@@ -613,7 +607,7 @@ public class AuthController {
 		userRepository.save(user);
 
 		// ALSO HERE SEND AN EMAIL THAT YOUR PASSWORD HAS BEEN CHANGED.
-		
+
 		if (userRepository.existsByEmail(email)) {
 
 			String to = email;
@@ -672,7 +666,7 @@ public class AuthController {
 						+ "                                            has been resetted</h1>\n"
 						+ "                                        <span\n"
 						+ "                                            style=\"display:inline-block; vertical-align:middle; margin:29px 0 26px; border-bottom:1px solid #cecece; width:100px;\"></span>\n"
-						                            
+
 						+ "                                    </td>\n" + "                                </tr>\n"
 						+ "                                <tr>\n"
 						+ "                                    <td style=\"height:40px;\">&nbsp;</td>\n"
@@ -696,7 +690,6 @@ public class AuthController {
 			}
 
 		}
-		
 
 	}
 
@@ -711,7 +704,6 @@ public class AuthController {
 		}
 	}
 
-	
 	// this will be in accounts ms
 	@GetMapping(path = "get_credit_cards")
 	public ResponseEntity<Collection<AccountType>> getCreditCards() {
@@ -728,26 +720,19 @@ public class AuthController {
 
 	}
 
-	
 	// this will be in accounts ms
-	
+
 	@PostMapping(path = "/user_credit_card_signup")
 	public void usercreditCardSignUp(@RequestParam int userId, @RequestParam String cardName) {
 
-
 		// put a check here for unique account number
-	
-		
-
 
 		Random rnd = new Random();
 		int accountNumber = rnd.nextInt(999999999);
-		
-		
+
 		UserAccount userAccount = new UserAccount();
 		User user = userRepository.getUserById(userId);
 
-		
 		userAccount.setAccountNumber(String.valueOf(accountNumber));
 		userAccount.setUser(user);
 		userAccount.setAccount_type(accountTypeDao.getIdByName(cardName));
@@ -756,35 +741,30 @@ public class AuthController {
 		System.out.println("HEREEE: " + userAccount.getAccountNumber());
 
 		// ALSO ADD DATA TO CREDIT_CARD TABLE HEREE AS WELL
-		
+
 		CreditCard creditCard = new CreditCard();
 		AccountType accountType = accountTypeDao.getAprByName(cardName);
-		
+
 		Random cardNumberRand = new Random();
 		String creditCardNumber = String.valueOf(cardNumberRand.nextInt(999999999));
 
 		Random cvvRand = new Random();
 		int cvvNumber = cvvRand.nextInt(999);
-		
+
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String dateFormatted = dateFormat.format(new Date());
-		
+
 		char charAt = dateFormatted.charAt(3);
-		
-		int charToInt = Character.getNumericValue(charAt) + 2; 
-		char intToChar=(char)(charToInt + '0');   
-		
-		
+
+		int charToInt = Character.getNumericValue(charAt) + 2;
+		char intToChar = (char) (charToInt + '0');
+
 		StringBuilder myName = new StringBuilder(dateFormatted);
 		myName.setCharAt(3, intToChar);
-		
-		
-	 
-		
+
 		String creditCardExpiryDateCalulation = myName.toString();
 		Date creditCardExpiryDate;
-		
-				
+
 		try {
 			creditCardExpiryDate = new SimpleDateFormat("yyyy-MM-dd").parse(creditCardExpiryDateCalulation);
 			creditCard.setCard_number(creditCardNumber);
@@ -792,16 +772,16 @@ public class AuthController {
 			creditCard.setInterestRate(accountType.getApr());
 			creditCard.setCvv(cvvNumber);
 			creditCard.setExpiryDate(creditCardExpiryDate);
-			
+
 			userAccountDao.save(userAccount);
 			creditCardDao.save(creditCard);
-			
+
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}	
-			
+		}
+
 	}
-	
+
 	/**
 	 * Get all Users in DB
 	 * 
@@ -823,14 +803,12 @@ public class AuthController {
 	 * @return Collection of all accounts of the user
 	 */
 
-
-	
 	// this should be in the accounts ms
-	
+
 	@GetMapping("/user_account")
 	public ResponseEntity<Collection<UserAccount>> getUserAccounts(@RequestParam String userId) {
-//		User user = new User();
-//		user.setId(userId);
+		// User user = new User();
+		// user.setId(userId);
 
 		// UserAccount userAccount = userAccountDao.findByUser(user);
 		int usersId = Integer.parseInt(userId);
