@@ -34,18 +34,17 @@ pipeline {
         
         stage('Push to Amazon ECR') {
             steps {
-                withAWS(credentials: 'jenkins-credentials', region: '${AWS_REGION}') {
-                    /*
-                     * Pull account ID from jenkins-credentials AWS profile
-                     * Login to AWS ECR for private repo access
-                     * Push image to ECR
-                     */
-                    sh '''
-                        AWS_ACCOUNT_ID=$(aws sts get-caller-identity | grep -oP \'(?<="Account": ")[^"]*\')
-                        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-                        docker tag ${NAME}:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${NAME}:latest
-                        docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${NAME}:latest
-                    '''
+                /*
+                * Pull account ID from jenkins-credentials AWS profile
+                * Login to AWS ECR for private repo access
+                * Push image to ECR
+                */
+                
+                script {
+                    def aws_account_id = awsIdentity().account
+                    sh ecrLogin()
+                    sh "docker tag ${NAME}:latest ${aws_account_id}.dkr.ecr.${AWS_REGION}.amazonaws.com/${NAME}:latest"
+                    sh "docker push ${aws_account_id}.dkr.ecr.${AWS_REGION}.amazonaws.com/${NAME}:latest"
                 }
             }
         }
