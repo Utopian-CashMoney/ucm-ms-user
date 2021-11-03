@@ -1,4 +1,6 @@
-FROM openjdk:16-alpine3.13
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-CMD ["java","-jar","/app.jar"]
+FROM openjdk:11-jre
+
+COPY /target/*.jar /usr/share/app.jar
+EXPOSE 8000
+
+ENTRYPOINT ["java", "-jar", "/usr/share/app.jar"]
